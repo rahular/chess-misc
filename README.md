@@ -12,7 +12,7 @@ OR
 >> python position_eval.py file <filename>
 (Note : filename must have the extension .fen)
 ``` 
-* **Output** : Current evaluation score and the best move. The FEN(s) along with the evaluation score is also written to a file called *game_moves.log*
+* **Output** : Current evaluation score and the best move. The FEN(s) along with the evaluation score is also written to a file called `game_moves.log`
 
 plotter.py
 ----------
@@ -20,7 +20,7 @@ You can also plot evaluation score vs number of moves using
 ```python
 >> python plotter.py
 ```
-This will take data from *game_moves.log*
+This will take data from `game_moves.log`
 
 make_dataset.py
 ---------------

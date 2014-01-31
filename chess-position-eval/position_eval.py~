@@ -2,7 +2,7 @@ import sys
 import subprocess, time
 
 engine = subprocess.Popen(
-    '../engine/stockfish',
+    './stockfish',
     universal_newlines=True,
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,

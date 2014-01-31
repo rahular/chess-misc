@@ -21,7 +21,7 @@ def get():
         if text == 'readyok':
             break
         elif text != '' and text.startswith('info depth'):
-            movesToMate = text.split('pv ')[1]
+            movesToMate = text.split('1 pv ')[1]
     return movesToMate
 
 def send_command(fen):

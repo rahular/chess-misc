@@ -28,4 +28,11 @@ This file takes in a puzzle file in PGN format which contains Mate in 4+ puzzles
 
 JavaStockfish
 =============
-A thin client for Stockfish. Comes in handy when we need to use Stockfish along with the object oriented goodness of Java. See `Javadoc` for detailed explanation.
+A thin client for Stockfish. Comes in handy when we need to use Stockfish along with the object oriented goodness of Java. See `Javadoc` for detailed explanation. The functions currently implemented are :
+* Start the engine
+* Stop the engine
+* Get list of valid moves
+* Get best move
+* Send UCI commands to engine
+* Get raw dump from engine
+* Pretty print the board state

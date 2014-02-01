@@ -36,4 +36,3 @@ A thin client for Stockfish. Comes in handy when we need to use Stockfish along 
 * Send UCI commands to engine
 * Get raw dump from engine
 * Pretty print the board state
-* Get evaluation score

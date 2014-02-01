@@ -137,4 +137,25 @@ public class Stockfish {
 			System.out.println(rows[i]);
 		}
 	}
+
+	/**
+	 * Get the evaluation score of a given board position
+	 * @param fen Position string
+	 * @param waitTime in milliseconds
+	 * @return evalScore
+	 */
+	public float getEvalScore(String fen, int waitTime) {
+		sendCommand("position fen " + fen);
+		sendCommand("go movetime " + waitTime);
+
+		float evalScore = 0.0f;
+		String[] dump = getOutput(waitTime + 20).split("\n");
+		for (int i = dump.length - 1; i >= 0; i--) {
+			if (dump[i].startsWith("info depth ")) {
+				evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
+						.split(" nodes")[0]);
+			}
+		}
+		return evalScore/100;
+	}
 }

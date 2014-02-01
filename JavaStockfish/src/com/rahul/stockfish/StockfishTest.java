@@ -27,6 +27,9 @@ public class StockfishTest {
 		// draw board from a given position
 		System.out.println("Board state :");
 		client.drawBoard(FEN);
+		
+		// get the evaluation score of current position
+		System.out.println("Evaluation score : " + client.getEvalScore(FEN, 2000));
 
 		// stop the engine
 		System.out.println("Stopping engine..");

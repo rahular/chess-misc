@@ -17,7 +17,7 @@ public class Stockfish {
 	private BufferedReader processReader;
 	private OutputStreamWriter processWriter;
 
-	private static final String PATH = "../engine/stockfish";
+	private static final String PATH = "./stockfish";
 
 	/**
 	 * Starts Stockfish engine as a process and initializes it

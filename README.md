@@ -25,3 +25,15 @@ This will take data from `game_moves.log`
 make_dataset.py
 ---------------
 This file takes in a puzzle file in PGN format which contains Mate in 4+ puzzles, parses out the FEN strings, finds the optimal move sequence for mate and prints it to `stdout` and a file named `dataset`
+
+JavaStockfish
+=============
+A thin client for Stockfish. Comes in handy when we need to use Stockfish along with the object oriented goodness of Java. See `Javadoc` for detailed explanation. The functions currently implemented are :
+* Start the engine
+* Stop the engine
+* Get list of valid moves
+* Get best move
+* Send UCI commands to engine
+* Get raw dump from engine
+* Pretty print the board state
+* Get evaluation score

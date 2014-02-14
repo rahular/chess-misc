@@ -1,0 +1,7 @@
+';
+			var board = new ChessBoard('board', ruyLopez);
+			};
+			$(document).ready(init);
+		</script>
+	</body>
+</html>

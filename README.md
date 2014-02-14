@@ -37,3 +37,7 @@ A thin client for Stockfish. Comes in handy when we need to use Stockfish along 
 * Get raw dump from engine
 * Pretty print the board state
 * Get evaluation score
+
+ChessVision
+===========
+A simple tool which uses the amazing wkhtml* library to convert chess positions in FEN to either static HTML or PNG images. (Active development going on. More to come)

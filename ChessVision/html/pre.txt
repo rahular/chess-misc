@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>FEN2PNG</title>
+		<link rel="stylesheet" href="css/chessboard.css" />
+	</head>
+	<body>
+		<div id="board" style="width: 400px"></div>
+		<script src="js/json3.min.js"></script>
+		<script src="js/jquery-1.10.1.min.js"></script>
+		<script src="js/chessboard.js"></script>
+		<script>
+			var init = function() {
+			var ruyLopez = '

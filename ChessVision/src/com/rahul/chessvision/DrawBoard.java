@@ -10,7 +10,7 @@ public class DrawBoard {
 	private static final String PRE_STRING_PATH = "./html/pre.txt";
 	private static final String POST_STRING_PATH = "./html/post.txt";
 	private static final String HTML_FILE_PATH = "./html/index.html";
-	private static final String CMD = "./lib/wkhtmltoimage.exe --crop-w 412 ./html/index.html ./img/";
+	private static final String CMD = "./lib/wkhtmltoimage --crop-w 412 ./html/index.html ./img/";
 
 	public static boolean fenToHtml(String fen) {
 		String html = "", line;
@@ -51,7 +51,7 @@ public class DrawBoard {
 	}
 	
 	public static boolean fenToPng(String fen) {
-		return fenToHtml(fen) && htmlToPng();
+		return fenToHtml(fen) & htmlToPng();
 	}
 
 	public static void main(String[] args) {

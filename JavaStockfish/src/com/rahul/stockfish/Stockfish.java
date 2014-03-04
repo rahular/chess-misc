@@ -152,8 +152,13 @@ public class Stockfish {
 		String[] dump = getOutput(waitTime + 20).split("\n");
 		for (int i = dump.length - 1; i >= 0; i--) {
 			if (dump[i].startsWith("info depth ")) {
+				try {
 				evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
 						.split(" nodes")[0]);
+				} catch(Exception e) {
+					evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
+							.split(" upperbound nodes")[0]);
+				}
 			}
 		}
 		return evalScore/100;

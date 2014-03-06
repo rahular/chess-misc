@@ -145,7 +145,7 @@ public class Generator {
 
 	public void buildBoards() {
 		try {
-			DataSetRow dataSetRow;
+			MyDataSetRow dataSetRow;
 			BufferedReader br = new BufferedReader(new FileReader(new File(
 					"./data/game4.fen")));
 			String fen;
@@ -182,7 +182,7 @@ public class Generator {
 		}
 	}
 
-	private void storeInputData(DataSetRow dataSetRow) {
+	private void storeInputData(MyDataSetRow dataSetRow) {
 		
 		try {
 			oos.writeObject(dataSetRow);
@@ -191,8 +191,8 @@ public class Generator {
 		}
 	}
 
-	private DataSetRow buildInputData() {
-		DataSetRow dataSetRow = new DataSetRow();
+	private MyDataSetRow buildInputData() {
+		MyDataSetRow dataSetRow = new MyDataSetRow();
 		dataSetRow.setBBishops(BBishops.getBitBoard());
 		dataSetRow.setBKing(BKing.getBitBoard());
 		dataSetRow.setBKnights(BKnights.getBitBoard());

@@ -4,18 +4,18 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import com.rahul.bbgen.DataSetRow;
+import com.rahul.bbgen.MyDataSetRow;
 
 public class PrepareData {
 	
-	public static ArrayList<DataSetRow> data = new ArrayList<DataSetRow>();
+	private static ArrayList<MyDataSetRow> data = new ArrayList<MyDataSetRow>();
 	
 	private static void readData() {
 		ObjectInputStream ois;
-		DataSetRow dataSetRow;
+		MyDataSetRow dataSetRow;
 		try {
 			ois = new ObjectInputStream(new FileInputStream("./data/game4.bb"));
-			while((dataSetRow = (DataSetRow) ois.readObject()) != null) {
+			while((dataSetRow = (MyDataSetRow) ois.readObject()) != null) {
 				data.add(dataSetRow);
 			}
 			ois.close();
@@ -25,9 +25,8 @@ public class PrepareData {
 	
 	private static void printData() {
 		int i = 0;
-		for(DataSetRow dataSetRow : data) {
+		for(MyDataSetRow dataSetRow : data) {
 			prettyPrint(dataSetRow.getRow());
-			System.out.println(" " + dataSetRow.getEvalScore()[0]);
 			i++;
 		}
 		System.out.println("Total rows : " + i);
@@ -36,6 +35,12 @@ public class PrepareData {
 	private static void prettyPrint(double[] row) {
 		for(double d : row)
 			System.out.printf("%.0f", d);
+		System.out.println();
+	}
+	
+	public static ArrayList<MyDataSetRow> getData() {
+		readData();
+		return data;
 	}
 
 	public static void main(String[] args) {

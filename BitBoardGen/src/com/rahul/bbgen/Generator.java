@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import com.rahul.stockfish.Stockfish;
 
@@ -23,18 +24,23 @@ public class Generator {
 	private BitBoard BKnights;
 	private BitBoard BKing;
 	private BitBoard BQueen;
-	
+
 	private Stockfish stockfish;
-	private double[] evalScore;
-	
+	private double evalScore;
+
+	private ArrayList<RowData> data;
+
 	private ObjectOutputStream oos;
 	private int turnChecker;
+
 	// Left out purposefully
 	// private double turn;
-	
+
 	public Generator() {
 		stockfish = new Stockfish();
 		turnChecker = -1;
+
+		data = new ArrayList<RowData>();
 	}
 
 	private void initBoards() {
@@ -51,11 +57,9 @@ public class Generator {
 		BKnights = new BitBoard();
 		BKing = new BitBoard();
 		BQueen = new BitBoard();
-		
-		evalScore = new double[1];
 	}
 
-	public void createBoards(String fen) {
+	public void createBoards(String fen, boolean scorePresent) {
 		initBoards();
 
 		int bitIndex = 0;
@@ -106,7 +110,11 @@ public class Generator {
 				bitIndex += (int) fenChars[i] - 48;
 			}
 		}
-		evalScore[0] = turnChecker * stockfish.getEvalScore(fen, 2000);
+		if (scorePresent) {
+			evalScore = Integer.parseInt(fen.split("\\[")[1].split("]")[0]) / 100.0f;
+		} else {
+			evalScore = turnChecker * stockfish.getEvalScore(fen, 2000);
+		}
 	}
 
 	public String prettyPrintBoards() {
@@ -138,82 +146,76 @@ public class Generator {
 		builder.append("Black Queen : ");
 		builder.append(BQueen.getPrettyBitBoard() + "\n");
 		builder.append("Evaluation score : ");
-		builder.append(evalScore[0] + "\n");
-		
+		builder.append(evalScore + "\n");
+
 		return builder.toString();
 	}
 
-	public void buildBoards() {
+	/**
+	 * scorePresent : Pass true if evaluation scores are present in the input
+	 * file. False otherwise.
+	 * linesToRead : Number of lines to read or -1 for
+	 * reading the whole file
+	 */
+	public void buildBoards(boolean scorePresent, int linesToRead) {
 		try {
-			MyDataSetRow dataSetRow;
 			BufferedReader br = new BufferedReader(new FileReader(new File(
-					"./data/game4.fen")));
+					"./data/thinking.log")));
 			String fen;
+			int linesRead = 0;
 
-			openObjectStream();
-			stockfish.startEngine();
-			while ((fen = br.readLine()) != null) {
-				createBoards(fen);
+			if (linesRead == -1)
+				linesToRead = Integer.MAX_VALUE;
+
+			if (!scorePresent)
+				stockfish.startEngine();
+			while ((fen = br.readLine()) != null && linesRead++ < linesToRead) {
+				createBoards(fen, scorePresent);
 				turnChecker *= -1;
-				dataSetRow = buildInputData();
-				storeInputData(dataSetRow);
+				createRow();
 			}
-			closeObjectStream();
-			stockfish.stopEngine();
+			if (!scorePresent)
+				stockfish.stopEngine();
 			br.close();
+
+			storeData();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void closeObjectStream() {
+	private void storeData() {
 		try {
-			oos.close();
+			oos = new ObjectOutputStream(new FileOutputStream(new File(
+					"./data/bitboards.bb")));
+			oos.writeObject(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void openObjectStream() {
-		try {
-			oos = new ObjectOutputStream(new FileOutputStream("./data/game4.bb"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	public void createRow() {
+		StringBuilder builder = new StringBuilder();
 
-	private void storeInputData(MyDataSetRow dataSetRow) {
-		
-		try {
-			oos.writeObject(dataSetRow);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+		builder.append(WRooks.getPrettyBitBoard());
+		builder.append(WKnights.getPrettyBitBoard());
+		builder.append(WBishops.getPrettyBitBoard());
+		builder.append(WPawns.getPrettyBitBoard());
+		builder.append(WKing.getPrettyBitBoard());
+		builder.append(WQueen.getPrettyBitBoard());
 
-	private MyDataSetRow buildInputData() {
-		MyDataSetRow dataSetRow = new MyDataSetRow();
-		dataSetRow.setBBishops(BBishops.getBitBoard());
-		dataSetRow.setBKing(BKing.getBitBoard());
-		dataSetRow.setBKnights(BKnights.getBitBoard());
-		dataSetRow.setBPawns(BPawns.getBitBoard());
-		dataSetRow.setBQueen(BQueen.getBitBoard());
-		dataSetRow.setBRooks(BRooks.getBitBoard());
+		builder.append(BRooks.getPrettyBitBoard());
+		builder.append(BKnights.getPrettyBitBoard());
+		builder.append(BBishops.getPrettyBitBoard());
+		builder.append(BPawns.getPrettyBitBoard());
+		builder.append(BKing.getPrettyBitBoard());
+		builder.append(BQueen.getPrettyBitBoard());
 
-		dataSetRow.setWBishops(WBishops.getBitBoard());
-		dataSetRow.setWKing(WKing.getBitBoard());
-		dataSetRow.setWKnights(WKnights.getBitBoard());
-		dataSetRow.setWPawns(WPawns.getBitBoard());
-		dataSetRow.setWQueen(WQueen.getBitBoard());
-		dataSetRow.setWRooks(WRooks.getBitBoard());
-		
-		dataSetRow.setEvalScore(evalScore);
-
-		return dataSetRow;
+		data.add(new RowData(builder.toString(), evalScore));
 	}
 
 	public static void main(String[] args) {
 		Generator generator = new Generator();
-		generator.buildBoards();
+		generator.buildBoards(true, 10000);
 	}
 }

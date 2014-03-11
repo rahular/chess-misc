@@ -15,11 +15,11 @@ import org.neuroph.nnet.learning.MomentumBackpropagation;
 import org.neuroph.util.TransferFunctionType;
 
 import com.rahul.bbgen.BitBoard;
-import com.rahul.bbgen.MyDataSetRow;
+import com.rahul.bbgen.RowData;
 
 public class MLP implements LearningEventListener {
 
-	private ArrayList<MyDataSetRow> data;
+	private ArrayList<RowData> data;
 
 	public static void main(String[] args) {
 		new MLP().run();
@@ -30,16 +30,18 @@ public class MLP implements LearningEventListener {
 		// create training set
 		data = PrepareData.getData();
 		DataSet trainingSet = new DataSet(BitBoard.BOARD_LENGTH * 12, 1);
-		for (MyDataSetRow row : data) {
-			trainingSet.addRow(row.getRow(), row.getEvalScore());
+		for (RowData row : data) {
+			trainingSet.addRow(PrepareData.inputToDoubleArray(row.getInput()),
+					PrepareData.expectedOutputToDoubleArray(row
+							.getExpectedOutput()));
 		}
 
-		// trainingSet.normalize();
+		trainingSet.normalize();
 
 		// create multi layer perceptron
 		MultiLayerPerceptron myMlPerceptron = new MultiLayerPerceptron(
 				TransferFunctionType.TANH, BitBoard.BOARD_LENGTH * 12,
-				BitBoard.BOARD_LENGTH * 6, 1);
+				BitBoard.BOARD_LENGTH * 24, BitBoard.BOARD_LENGTH * 12, 1);
 
 		// enable batch if using MomentumBackpropagation
 		if (myMlPerceptron.getLearningRule() instanceof MomentumBackpropagation)

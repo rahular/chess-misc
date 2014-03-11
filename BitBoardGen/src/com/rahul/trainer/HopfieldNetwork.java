@@ -1,26 +1,27 @@
 package com.rahul.trainer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 import org.neuroph.nnet.Hopfield;
 
 import com.rahul.bbgen.BitBoard;
-import com.rahul.bbgen.MyDataSetRow;
+import com.rahul.bbgen.RowData;
 
 public class HopfieldNetwork {
 
 	public static void main(String args[]) {
 
-		ArrayList<MyDataSetRow> data;
+		ArrayList<RowData> data;
 
 		// create training set
 		data = PrepareData.getData();
 		DataSet trainingSet = new DataSet(BitBoard.BOARD_LENGTH * 12, 1);
-		for (MyDataSetRow row : data) {
-			trainingSet.addRow(row.getRow(), row.getEvalScore());
+		for (RowData row : data) {
+			trainingSet.addRow(PrepareData.inputToDoubleArray(row.getInput()),
+					PrepareData.expectedOutputToDoubleArray(row
+							.getExpectedOutput()));
 		}
 
 		// create hopfield network
@@ -39,8 +40,8 @@ public class HopfieldNetwork {
 			myHopfield.calculate();
 			double[] networkOutput = myHopfield.getOutput();
 
-			printArray(trainingSetRow.getInput());
-			printArray(networkOutput);
+			// printArray(trainingSetRow.getInput());
+			// printArray(networkOutput);
 			printPairwiseError(trainingSetRow.getInput(), networkOutput);
 			
 			counter++;

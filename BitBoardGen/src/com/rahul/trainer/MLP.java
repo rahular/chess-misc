@@ -14,34 +14,59 @@ import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.nnet.learning.MomentumBackpropagation;
 import org.neuroph.util.TransferFunctionType;
 
-import com.rahul.bbgen.BitBoard;
-import com.rahul.bbgen.RowData;
+import com.rahul.bitboard.BitBoard;
+import com.rahul.numboard.NumBoard;
 
 public class MLP implements LearningEventListener {
 
-	private ArrayList<RowData> data;
-
 	public static void main(String[] args) {
-		new MLP().run();
+		new MLP().run(false);
 	}
 
-	public void run() {
+	/**
+	 * isBit should be set to true for training the network on bitboard data and
+	 * false for training from numboard data
+	 * 
+	 * @param isBit
+	 */
+	public void run(boolean isBit) {
+
+		DataSet trainingSet;
 
 		// create training set
-		data = PrepareData.getData();
-		DataSet trainingSet = new DataSet(BitBoard.BOARD_LENGTH * 12, 1);
-		for (RowData row : data) {
-			trainingSet.addRow(PrepareData.inputToDoubleArray(row.getInput()),
-					PrepareData.expectedOutputToDoubleArray(row
-							.getExpectedOutput()));
+		if (isBit) {
+			ArrayList<com.rahul.bitboard.RowData> data;
+			trainingSet = new DataSet(BitBoard.BOARD_LENGTH * 12, 1);
+			data = PrepareData.getBitBoardData("./data/bitboards_game4.bb");
+			for (com.rahul.bitboard.RowData row : data) {
+				trainingSet.addRow(PrepareData.inputToDoubleArray(row
+						.getInput()), PrepareData
+						.expectedOutputToDoubleArray(row.getExpectedOutput()));
+			}
+		} else {
+			ArrayList<com.rahul.numboard.RowData> data;
+			trainingSet = new DataSet(NumBoard.BOARD_SIZE, 1);
+			data = PrepareData.getNumBoardData("./data/numboards_game4.bb");
+			for (com.rahul.numboard.RowData row : data) {
+				trainingSet.addRow(row.getInput(), row.getExpectedOutput());
+			}
 		}
 
-		trainingSet.normalize();
+		// trainingSet.normalize();
 
 		// create multi layer perceptron
-		MultiLayerPerceptron myMlPerceptron = new MultiLayerPerceptron(
-				TransferFunctionType.TANH, BitBoard.BOARD_LENGTH * 12,
-				BitBoard.BOARD_LENGTH * 24, BitBoard.BOARD_LENGTH * 12, 1);
+		MultiLayerPerceptron myMlPerceptron;
+
+		if (isBit) {
+			myMlPerceptron = new MultiLayerPerceptron(
+					TransferFunctionType.TANH, BitBoard.BOARD_LENGTH * 12,
+					BitBoard.BOARD_LENGTH * 24, BitBoard.BOARD_LENGTH * 12, 1);
+		} else {
+			myMlPerceptron = new MultiLayerPerceptron(
+					TransferFunctionType.TANH, NumBoard.BOARD_SIZE,
+					NumBoard.BOARD_SIZE * 4, NumBoard.BOARD_SIZE * 2,
+					NumBoard.BOARD_SIZE, 1);
+		}
 
 		// enable batch if using MomentumBackpropagation
 		if (myMlPerceptron.getLearningRule() instanceof MomentumBackpropagation)
